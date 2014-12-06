@@ -6,9 +6,13 @@ module Winter {
 		state: Play
 		snowman: Phaser.Sprite
 		hat: Phaser.Sprite
+		nose: Phaser.Sprite
 		clothe: Phaser.Sprite
+		wood: Phaser.Sprite
 		hatKey: string = ''
+		noseKey: string = ''
 		clotheKey: string = ''
+		woodKey: string = ''
 
 		constructor(game: Phaser.Game, x: number, y: number, state: Play) {
 			super(game)
@@ -20,17 +24,9 @@ module Winter {
 			this.snowman.anchor.x = 0.5
 
 			this.hat = this.game.add.sprite(0, 0)
+			this.nose = this.game.add.sprite(0, 0)
 			this.clothe = this.game.add.sprite(0, 0)
-		}
-
-		changeClothe(key: string) {
-			this.clothe.destroy()
-			this.clothe = this.game.add.sprite(0, 0, key + '_weared', null, this)
-			this.clothe.anchor.x = 0.5
-
-			this.clotheKey = key
-
-			this.state.checkOrder(this.hatKey)
+			this.wood = this.game.add.sprite(0, 0)
 		}
 
 		changeHat(key: string) {
@@ -40,7 +36,53 @@ module Winter {
 
 			this.hatKey = key
 
-			this.state.checkOrder(this.hatKey)
+			this.check()
 		}
+
+		changeNose(key: string) {
+			this.nose.destroy()
+			this.nose = this.game.add.sprite(0, 0, key + '_weared', null, this)
+			this.nose.anchor.x = 0.5
+
+			this.noseKey = key
+
+			this.check()
+		}
+
+		changeClothe(key: string) {
+			this.clothe.destroy()
+			this.clothe = this.game.add.sprite(0, 0, key + '_weared', null, this)
+			this.clothe.anchor.x = 0.5
+
+			this.clotheKey = key
+
+			this.check()
+		}
+
+		changeWood(key: string) {
+			this.wood.destroy()
+			this.wood = this.game.add.sprite(0, 0, key + '_weared', null, this)
+			this.wood.anchor.x = 0.5
+
+			this.woodKey = key
+
+			this.check()
+		}
+
+		reset() {
+			this.hat.destroy()
+			this.nose.destroy()
+			this.clothe.destroy()
+			this.wood.destroy()
+			this.hatKey = ''
+			this.noseKey = ''
+			this.clotheKey = ''
+			this.woodKey = ''
+		}
+
+		check() {
+			this.state.checkOrder(this.hatKey, this.noseKey, this.clotheKey, this.woodKey)
+		}
+
 	}
 }

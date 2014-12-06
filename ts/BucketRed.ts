@@ -35,7 +35,7 @@ module Winter {
 
 		dragStop() {
 			if (this.drag.overlap(this.snowman)) {
-				this.snowman.changeClothe(this.drag.key)
+				this.snowman.changeNose(this.drag.key)
 			}
 			this.drag.position.set(0,0)
 			this.drag.alpha = 0

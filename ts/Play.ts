@@ -5,12 +5,15 @@
 /// <reference path='Order' />
 /// <reference path='BucketCarrot' />
 /// <reference path='BucketRed' />
+/// <reference path='Woods' />
+/// <reference path='Cloud' />
 
 module Winter {
 
 	export class Play extends Phaser.State {
 
 		orders: Order[] = []
+		snowman: Snowman
 
 		preload() {
 			var ress = [
@@ -68,7 +71,9 @@ module Winter {
 				'clothes_stand',
 				'hat_stand',
 				'bubble',
+				'cloud',
 				'eyes',
+				'snow',
 				'snowman'
 
 			]
@@ -82,14 +87,17 @@ module Winter {
 
 			this.createBackground()
 
-			var snowman = new Snowman(this.game, 400, 232, this)
-			new HatStand(this.game, 98, 260, snowman)
-			new ClothesStand(this.game, 232, 260, snowman)
+			this.snowman = new Snowman(this.game, 400, 232, this)
+			new HatStand(this.game, 98, 260, this.snowman)
+			new ClothesStand(this.game, 232, 260, this.snowman)
 
 			this.createForground()
 
-			new BucketCarrot(this.game, 282, 515, snowman)
-			new BucketRed(this.game, 202, 535, snowman)
+			new BucketCarrot(this.game, 282, 515, this.snowman)
+			new BucketRed(this.game, 202, 535, this.snowman)
+
+			new Woods(this.game, 500, 490, this.snowman)
+			new Cloud(this.game, 400, 162, this.snowman)
 
 			this.newOrder()
 		}
@@ -114,13 +122,20 @@ module Winter {
 			this.orders.push(new Order(this.game, 626, 262))
 		}
 
-		checkOrder(hatKey: string) {
+		checkOrder(hatKey: string, noseKey: string, clotheKey: string, woodKey: string) {
 			for (var i in this.orders) {
-				if (this.orders[i].hatKey == hatKey) {
-					return console.log("victory !")
+				if (this.orders[i].verify(hatKey, noseKey, clotheKey, woodKey)) {
+					//return console.log('victory !')
+					this.orders[i].destroy()
+					delete this.orders[i]
+
+					// Destroy all !
+					this.game.time.events.add(Phaser.Timer.SECOND * 1, () => {
+						this.snowman.reset()
+						this.newOrder()
+					}, this)
 				}
 			}
-			console.log("Nop !")
 		}
 
 	}
