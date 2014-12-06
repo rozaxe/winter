@@ -17,7 +17,7 @@ module Winter {
 			this.add(new Clothe(this.game, 15, 'blue_scarf', snowman))
 			this.add(new Clothe(this.game, 45, 'red_scarf', snowman))
 			this.add(new Clothe(this.game, 75, 'purple_scarf', snowman))
-			this.add(new Clothe(this.game, 105, 'green_scarf', snowman))
+			//this.add(new Clothe(this.game, 105, 'green_scarf', snowman))
 		}
 	}
 }
