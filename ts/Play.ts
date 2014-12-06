@@ -3,6 +3,8 @@
 /// <reference path='ClothesStand' />
 /// <reference path='Snowman' />
 /// <reference path='Order' />
+/// <reference path='BucketCarrot' />
+/// <reference path='BucketRed' />
 
 module Winter {
 
@@ -85,6 +87,9 @@ module Winter {
 			new ClothesStand(this.game, 232, 260, snowman)
 
 			this.createForground()
+
+			new BucketCarrot(this.game, 282, 515, snowman)
+			new BucketRed(this.game, 202, 535, snowman)
 
 			this.newOrder()
 		}

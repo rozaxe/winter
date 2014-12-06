@@ -43,6 +43,41 @@ var Winter;
 /// <reference path='Snowman' />
 var Winter;
 (function (Winter) {
+    var BucketCarrot = (function (_super) {
+        __extends(BucketCarrot, _super);
+        function BucketCarrot(game, x, y, snowman) {
+            _super.call(this, game, x, y, 'bucket_carrot');
+            this.snowman = snowman;
+            this.disY = y;
+            this.anchor.setTo(0.5);
+            this.drag = this.game.add.sprite(0, 0, 'carrot');
+            this.drag.anchor.setTo(0.5);
+            this.addChild(this.drag);
+            this.drag.alpha = 0;
+            this.drag.inputEnabled = true;
+            this.drag.input.enableDrag();
+            this.drag.events.onDragStart.add(this.dragStart, this);
+            this.drag.events.onDragStop.add(this.dragStop, this);
+            this.game.add.existing(this);
+        }
+        BucketCarrot.prototype.dragStart = function () {
+            this.drag.alpha = 1;
+        };
+        BucketCarrot.prototype.dragStop = function () {
+            if (this.drag.overlap(this.snowman)) {
+                this.snowman.changeClothe(this.drag.key);
+            }
+            this.drag.position.set(0, 0);
+            this.drag.alpha = 0;
+        };
+        return BucketCarrot;
+    })(Phaser.Sprite);
+    Winter.BucketCarrot = BucketCarrot;
+})(Winter || (Winter = {}));
+/// <reference path='d/phaser' />
+/// <reference path='Snowman' />
+var Winter;
+(function (Winter) {
     var Hat = (function (_super) {
         __extends(Hat, _super);
         function Hat(game, y, key, anchor, snowman) {
@@ -176,10 +211,47 @@ var Winter;
     Winter.Order = Order;
 })(Winter || (Winter = {}));
 /// <reference path='d/phaser' />
+/// <reference path='Snowman' />
+var Winter;
+(function (Winter) {
+    var BucketRed = (function (_super) {
+        __extends(BucketRed, _super);
+        function BucketRed(game, x, y, snowman) {
+            _super.call(this, game, x, y, 'bucket_red');
+            this.snowman = snowman;
+            this.disY = y;
+            this.anchor.setTo(0.5);
+            this.drag = this.game.add.sprite(0, 0, 'pouet_pouet');
+            this.drag.anchor.setTo(0.5);
+            this.addChild(this.drag);
+            this.drag.alpha = 0;
+            this.drag.inputEnabled = true;
+            this.drag.input.enableDrag();
+            this.drag.events.onDragStart.add(this.dragStart, this);
+            this.drag.events.onDragStop.add(this.dragStop, this);
+            this.game.add.existing(this);
+        }
+        BucketRed.prototype.dragStart = function () {
+            this.drag.alpha = 1;
+        };
+        BucketRed.prototype.dragStop = function () {
+            if (this.drag.overlap(this.snowman)) {
+                this.snowman.changeClothe(this.drag.key);
+            }
+            this.drag.position.set(0, 0);
+            this.drag.alpha = 0;
+        };
+        return BucketRed;
+    })(Phaser.Sprite);
+    Winter.BucketRed = BucketRed;
+})(Winter || (Winter = {}));
+/// <reference path='d/phaser' />
 /// <reference path='HatStand' />
 /// <reference path='ClothesStand' />
 /// <reference path='Snowman' />
 /// <reference path='Order' />
+/// <reference path='BucketCarrot' />
+/// <reference path='BucketRed' />
 var Winter;
 (function (Winter) {
     var Play = (function (_super) {
@@ -246,6 +318,8 @@ var Winter;
             new Winter.HatStand(this.game, 98, 260, snowman);
             new Winter.ClothesStand(this.game, 232, 260, snowman);
             this.createForground();
+            new Winter.BucketCarrot(this.game, 282, 515, snowman);
+            new Winter.BucketRed(this.game, 202, 535, snowman);
             this.newOrder();
         };
         Play.prototype.createForground = function () {
