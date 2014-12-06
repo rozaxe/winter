@@ -1,5 +1,6 @@
 /// <reference path='d/phaser' />
 /// <reference path='HatStand' />
+/// <reference path='ClothesStand' />
 /// <reference path='Snowman' />
 /// <reference path='Order' />
 
@@ -10,13 +11,68 @@ module Winter {
 		orders: Order[] = []
 
 		preload() {
-			this.load.image('hat_stand', 'assets/hat_stand.png')
-			this.load.image('christmas_hat', 'assets/christmas_hat.png')
-			this.load.image('melon_hat', 'assets/melon_hat.png')
-			this.load.image('christmas_hat_hanging', 'assets/christmas_hat_hanging.png')
-			this.load.image('melon_hat_hanging', 'assets/melon_hat_hanging.png')
-			this.load.image('snowman', 'assets/snowman.png')
-			this.load.image('bubble', 'assets/bubble.png')
+			var ress = [
+				'blue_scarf',
+				'red_scarf',
+				'green_scarf',
+				'purple_scarf',
+
+				'blue_scarf_hanging',
+				'red_scarf_hanging',
+				'green_scarf_hanging',
+				'purple_scarf_hanging',
+
+				'blue_scarf_weared',
+				'red_scarf_weared',
+				'green_scarf_weared',
+				'purple_scarf_weared',
+
+				'carrot',
+				'pouet_pouet',
+
+				'bucket_carrot',
+				'bucket_red',
+
+				'carrot_weared',
+				'pouet_pouet_weared',
+
+				'christmas_hat',
+				'high_hat',
+				'melon_hat',
+				'flat_hat',
+
+				'christmas_hat_hanging',
+				'high_hat_hanging',
+				'melon_hat_hanging',
+				'flat_hat_hanging',
+
+				'christmas_hat_weared',
+				'high_hat_weared',
+				'melon_hat_weared',
+				'flat_hat_weared',
+
+				'wood_1',
+				'wood_2',
+				'wood_3',
+
+				'wood_1_sorted',
+				'wood_2_sorted',
+				'wood_3_sorted',
+
+				'wood_1_weared',
+				'wood_2_weared',
+				'wood_3_weared',
+
+				'clothes_stand',
+				'hat_stand',
+				'bubble',
+				'eyes',
+				'snowman'
+
+			]
+			for (var i in ress) {
+				this.load.image(ress[i], 'assets/' + ress[i] + '.png')
+			}
 		}
 
 		create() {
@@ -24,8 +80,9 @@ module Winter {
 
 			this.createBackground()
 
-			var snowman = new Snowman(this.game, 400, 280, this)
+			var snowman = new Snowman(this.game, 400, 232, this)
 			new HatStand(this.game, 98, 260, snowman)
+			new ClothesStand(this.game, 232, 260, snowman)
 
 			this.createForground()
 

@@ -6,6 +6,9 @@ module Winter {
 		state: Play
 		snowman: Phaser.Sprite
 		hat: Phaser.Sprite
+		clothe: Phaser.Sprite
+		hatKey: string = ''
+		clotheKey: string = ''
 
 		constructor(game: Phaser.Game, x: number, y: number, state: Play) {
 			super(game)
@@ -17,14 +20,27 @@ module Winter {
 			this.snowman.anchor.x = 0.5
 
 			this.hat = this.game.add.sprite(0, 0)
+			this.clothe = this.game.add.sprite(0, 0)
+		}
+
+		changeClothe(key: string) {
+			this.clothe.destroy()
+			this.clothe = this.game.add.sprite(0, 0, key + '_weared', null, this)
+			this.clothe.anchor.x = 0.5
+
+			this.clotheKey = key
+
+			this.state.checkOrder(this.hatKey)
 		}
 
 		changeHat(key: string) {
 			this.hat.destroy()
-			this.hat = this.game.add.sprite(0, 0, key, null, this)
+			this.hat = this.game.add.sprite(0, 0, key + '_weared', null, this)
 			this.hat.anchor.x = 0.5
 
-			this.state.checkOrder(this.hat.key)
+			this.hatKey = key
+
+			this.state.checkOrder(this.hatKey)
 		}
 	}
 }
