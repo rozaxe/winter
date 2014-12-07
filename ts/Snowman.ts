@@ -14,11 +14,17 @@ module Winter {
 		clotheKey: string = ''
 		woodKey: string = ''
 
+		initX: number
+		initY: number
+
 		constructor(game: Phaser.Game, x: number, y: number, state: Play) {
 			super(game)
 			this.state = state
 			this.x = x
 			this.y = Game.fullHeight
+
+			this.initX = x
+			this.initY = y
 
 			this.snowman = this.game.add.sprite(0, 0, 'snowman', null, this)
 			this.snowman.anchor.x = 0.5
@@ -87,6 +93,9 @@ module Winter {
 		}
 
 		reset() {
+			this.y = Game.fullHeight
+			this.x = this.initX
+
 			this.hat.destroy()
 			this.nose.destroy()
 			this.clothe.destroy()
@@ -96,11 +105,38 @@ module Winter {
 			this.noseKey = ''
 			this.clotheKey = ''
 			this.woodKey = ''
+
+			this.game.add.tween(this).to({y: this.initY}, 1000, Phaser.Easing.Bounce.Out).start()
 		}
 
 		check() {
 			this.state.checkOrder(this.hatKey, this.noseKey, this.clotheKey, this.woodKey)
 		}
 
+		liveeeee() {
+			// Eye
+			var eyes = this.game.add.sprite(-2, 94, 'eyes', null, this)
+			eyes.anchor.setTo(0.5)
+			eyes.scale.y = 0
+			this.game.add.tween(eyes.scale).to({y: 1}, 200).start()
+
+			// Jump
+			this.game.time.events.add(Phaser.Timer.SECOND * 0.5, () => {
+				var vanHalen: Function = (v:number): number => {
+					return Math.sin(v * Math.PI) * 0.3
+				}
+
+				var move = this.game.add.tween(this)
+				var jump = this.game.add.tween(this)
+				move.to({x: Game.fullWidth + 200}, 1500)
+				move.onComplete.add(() => {
+					jump.stop()
+					eyes.destroy()
+					this.reset()
+				}, this)
+				jump.to({y: 30}, 500, vanHalen, true, 0, Number.MAX_VALUE, false)
+				move.start()
+			}, this)
+		}
 	}
 }

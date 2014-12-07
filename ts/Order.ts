@@ -26,11 +26,11 @@ module Winter {
 				this.clotheKey = this.game.rnd.pick(['', 'blue_scarf', 'red_scarf', 'purple_scarf'])
 				this.woodKey = this.game.rnd.pick(['', 'wood_1', 'wood_2', 'wood_3'])
 
-				/*
+				//*
 				this.hatKey = 'high_hat'
-				this.clotheKey = 'green_scarf'
-				this.noseKey = 'carrot'
-				this.woodKey = 'wood_2'
+				this.clotheKey = ''
+				this.noseKey = ''
+				this.woodKey = ''
 				//*/
 
 			} while (this.hatKey == '' && this.noseKey == '' && this.clotheKey == '' && this.woodKey == '')
@@ -55,6 +55,22 @@ module Winter {
 			wood.position.setTo(16, 64)
 			wood.scale.setTo(0.5)
 			this.addChild(wood)
+		}
+
+		valid() {
+			var valid = this.game.add.sprite(0, 0, 'valid')
+			valid.alpha = 0
+			this.addChild(valid)
+
+			var anim = this.game.add.tween(valid)
+			anim.onComplete.add(() => {
+				var kill = this.game.add.tween(this)
+				kill.onComplete.add(() => {
+					this.destroy()
+				}, this)
+				kill.to({x: Game.fullWidth}, 200).start()
+			}, this)
+			anim.to({alpha: 1}, 100).start()
 		}
 
 		verify(hatKey: string, noseKey: string, clotheKey: string, woodKey: string) {

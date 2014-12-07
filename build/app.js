@@ -7,6 +7,175 @@ var __extends = this.__extends || function (d, b) {
 };
 var Winter;
 (function (Winter) {
+    var Order = (function (_super) {
+        __extends(Order, _super);
+        function Order(game, x, y) {
+            _super.call(this, game, Winter.Game.fullWidth, y, 'bubble');
+            this.randomOrder();
+            this.show();
+            this.game.add.existing(this);
+            this.game.add.tween(this).to({ x: x }, 200, Phaser.Easing.Linear.None).start();
+        }
+        Order.prototype.randomOrder = function () {
+            do {
+                this.hatKey = this.game.rnd.pick(['', 'high_hat', 'christmas_hat']);
+                this.noseKey = this.game.rnd.pick(['', 'carrot', 'pouet_pouet']);
+                this.clotheKey = this.game.rnd.pick(['', 'blue_scarf', 'red_scarf', 'purple_scarf']);
+                this.woodKey = this.game.rnd.pick(['', 'wood_1', 'wood_2', 'wood_3']);
+                //*
+                this.hatKey = 'high_hat';
+                this.clotheKey = '';
+                this.noseKey = '';
+                this.woodKey = '';
+            } while (this.hatKey == '' && this.noseKey == '' && this.clotheKey == '' && this.woodKey == '');
+        };
+        Order.prototype.show = function () {
+            var hat = this.game.add.sprite(0, 0, this.hatKey);
+            hat.position.setTo(16, 8);
+            hat.scale.setTo(0.5);
+            this.addChild(hat);
+            var nose = this.game.add.sprite(0, 0, this.noseKey);
+            nose.position.setTo(70, -8);
+            this.addChild(nose);
+            var clothe = this.game.add.sprite(0, 0, this.clotheKey);
+            clothe.position.setTo(70, 64);
+            clothe.scale.setTo(0.5);
+            this.addChild(clothe);
+            var wood = this.game.add.sprite(0, 0, this.woodKey);
+            wood.position.setTo(16, 64);
+            wood.scale.setTo(0.5);
+            this.addChild(wood);
+        };
+        Order.prototype.valid = function () {
+            var _this = this;
+            var valid = this.game.add.sprite(0, 0, 'valid');
+            valid.alpha = 0;
+            this.addChild(valid);
+            var anim = this.game.add.tween(valid);
+            anim.onComplete.add(function () {
+                var kill = _this.game.add.tween(_this);
+                kill.onComplete.add(function () {
+                    _this.destroy();
+                }, _this);
+                kill.to({ x: Winter.Game.fullWidth }, 200).start();
+            }, this);
+            anim.to({ alpha: 1 }, 100).start();
+        };
+        Order.prototype.verify = function (hatKey, noseKey, clotheKey, woodKey) {
+            if (this.hatKey == hatKey && this.noseKey == noseKey && this.clotheKey == clotheKey && this.woodKey == woodKey) {
+                return true;
+            }
+            return false;
+        };
+        return Order;
+    })(Phaser.Sprite);
+    Winter.Order = Order;
+})(Winter || (Winter = {}));
+/// <reference path='d/phaser' />
+var Winter;
+(function (Winter) {
+    var Boot = (function (_super) {
+        __extends(Boot, _super);
+        function Boot() {
+            _super.apply(this, arguments);
+        }
+        Boot.prototype.preload = function () {
+            this.game.load.image('moon', 'assets/moon.png');
+        };
+        Boot.prototype.create = function () {
+            this.game.state.start('loader');
+        };
+        return Boot;
+    })(Phaser.State);
+    Winter.Boot = Boot;
+})(Winter || (Winter = {}));
+/// <reference path='d/phaser' />
+var Winter;
+(function (Winter) {
+    var Loader = (function (_super) {
+        __extends(Loader, _super);
+        function Loader() {
+            _super.apply(this, arguments);
+        }
+        Loader.prototype.loadAssets = function () {
+            var ress = [
+                'blue_scarf',
+                'red_scarf',
+                'green_scarf',
+                'purple_scarf',
+                'blue_scarf_hanging',
+                'red_scarf_hanging',
+                'green_scarf_hanging',
+                'purple_scarf_hanging',
+                'blue_scarf_weared',
+                'red_scarf_weared',
+                'green_scarf_weared',
+                'purple_scarf_weared',
+                'carrot',
+                'pouet_pouet',
+                'bucket_carrot',
+                'bucket_red',
+                'carrot_weared',
+                'pouet_pouet_weared',
+                'christmas_hat',
+                'high_hat',
+                'melon_hat',
+                'flat_hat',
+                'christmas_hat_hanging',
+                'high_hat_hanging',
+                'melon_hat_hanging',
+                'flat_hat_hanging',
+                'christmas_hat_weared',
+                'high_hat_weared',
+                'melon_hat_weared',
+                'flat_hat_weared',
+                'wood_1',
+                'wood_2',
+                'wood_3',
+                'wood_1_sorted',
+                'wood_2_sorted',
+                'wood_3_sorted',
+                'wood_1_weared',
+                'wood_2_weared',
+                'wood_3_weared',
+                'clothes_stand',
+                'hat_stand',
+                'bubble',
+                'valid',
+                'cloud',
+                'eyes',
+                'snow',
+                'snowman'
+            ];
+            for (var i in ress) {
+                this.load.image(ress[i], 'assets/' + ress[i] + '.png');
+            }
+            this.load.start();
+        };
+        Loader.prototype.create = function () {
+            this.mask = this.game.add.graphics(32, 32);
+            this.mask.beginFill(0);
+            this.mask.drawRect(0, 0, 100, 100);
+            this.mask.scale.y = 0;
+            var moon = this.game.add.sprite(32, 32, 'moon');
+            moon.mask = this.mask;
+            this.game.load.onFileComplete.add(this.fileComplete, this);
+            this.game.load.onLoadComplete.add(this.loadComplete, this);
+            this.loadAssets();
+        };
+        Loader.prototype.fileComplete = function (progress, cacheKey, success, totalLoaded, totalFiles) {
+            this.mask.scale.y = progress / 100;
+        };
+        Loader.prototype.loadComplete = function () {
+            this.game.state.start('play');
+        };
+        return Loader;
+    })(Phaser.State);
+    Winter.Loader = Loader;
+})(Winter || (Winter = {}));
+/// <reference path='d/phaser' />
+var Winter;
+(function (Winter) {
     var Snowman = (function (_super) {
         __extends(Snowman, _super);
         function Snowman(game, x, y, state) {
@@ -18,6 +187,8 @@ var Winter;
             this.state = state;
             this.x = x;
             this.y = Winter.Game.fullHeight;
+            this.initX = x;
+            this.initY = y;
             this.snowman = this.game.add.sprite(0, 0, 'snowman', null, this);
             this.snowman.anchor.x = 0.5;
             this.hat = this.game.add.sprite(0, 0);
@@ -69,6 +240,8 @@ var Winter;
             this.woodKey = '';
         };
         Snowman.prototype.reset = function () {
+            this.y = Winter.Game.fullHeight;
+            this.x = this.initX;
             this.hat.destroy();
             this.nose.destroy();
             this.clothe.destroy();
@@ -77,9 +250,34 @@ var Winter;
             this.noseKey = '';
             this.clotheKey = '';
             this.woodKey = '';
+            this.game.add.tween(this).to({ y: this.initY }, 1000, Phaser.Easing.Bounce.Out).start();
         };
         Snowman.prototype.check = function () {
             this.state.checkOrder(this.hatKey, this.noseKey, this.clotheKey, this.woodKey);
+        };
+        Snowman.prototype.liveeeee = function () {
+            var _this = this;
+            // Eye
+            var eyes = this.game.add.sprite(-2, 94, 'eyes', null, this);
+            eyes.anchor.setTo(0.5);
+            eyes.scale.y = 0;
+            this.game.add.tween(eyes.scale).to({ y: 1 }, 200).start();
+            // Jump
+            this.game.time.events.add(Phaser.Timer.SECOND * 0.5, function () {
+                var vanHalen = function (v) {
+                    return Math.sin(v * Math.PI) * 0.3;
+                };
+                var move = _this.game.add.tween(_this);
+                var jump = _this.game.add.tween(_this);
+                move.to({ x: Winter.Game.fullWidth + 200 }, 1500);
+                move.onComplete.add(function () {
+                    jump.stop();
+                    eyes.destroy();
+                    _this.reset();
+                }, _this);
+                jump.to({ y: 30 }, 500, vanHalen, true, 0, Number.MAX_VALUE, false);
+                move.start();
+            }, this);
         };
         return Snowman;
     })(Phaser.Group);
@@ -198,53 +396,6 @@ var Winter;
         return ClothesStand;
     })(Phaser.Group);
     Winter.ClothesStand = ClothesStand;
-})(Winter || (Winter = {}));
-/// <reference path='d/phaser' />
-var Winter;
-(function (Winter) {
-    var Order = (function (_super) {
-        __extends(Order, _super);
-        function Order(game, x, y) {
-            _super.call(this, game, Winter.Game.fullWidth, y, 'bubble');
-            this.randomOrder();
-            this.show();
-            this.game.add.existing(this);
-            this.game.add.tween(this).to({ x: x }, 200, Phaser.Easing.Linear.None).start();
-        }
-        Order.prototype.randomOrder = function () {
-            do {
-                this.hatKey = this.game.rnd.pick(['', 'high_hat', 'christmas_hat']);
-                this.noseKey = this.game.rnd.pick(['', 'carrot', 'pouet_pouet']);
-                this.clotheKey = this.game.rnd.pick(['', 'blue_scarf', 'red_scarf', 'purple_scarf']);
-                this.woodKey = this.game.rnd.pick(['', 'wood_1', 'wood_2', 'wood_3']);
-            } while (this.hatKey == '' && this.noseKey == '' && this.clotheKey == '' && this.woodKey == '');
-        };
-        Order.prototype.show = function () {
-            var hat = this.game.add.sprite(0, 0, this.hatKey);
-            hat.position.setTo(16, 8);
-            hat.scale.setTo(0.5);
-            this.addChild(hat);
-            var nose = this.game.add.sprite(0, 0, this.noseKey);
-            nose.position.setTo(70, -8);
-            this.addChild(nose);
-            var clothe = this.game.add.sprite(0, 0, this.clotheKey);
-            clothe.position.setTo(70, 64);
-            clothe.scale.setTo(0.5);
-            this.addChild(clothe);
-            var wood = this.game.add.sprite(0, 0, this.woodKey);
-            wood.position.setTo(16, 64);
-            wood.scale.setTo(0.5);
-            this.addChild(wood);
-        };
-        Order.prototype.verify = function (hatKey, noseKey, clotheKey, woodKey) {
-            if (this.hatKey == hatKey && this.noseKey == noseKey && this.clotheKey == clotheKey && this.woodKey == woodKey) {
-                return true;
-            }
-            return false;
-        };
-        return Order;
-    })(Phaser.Sprite);
-    Winter.Order = Order;
 })(Winter || (Winter = {}));
 /// <reference path='d/phaser' />
 /// <reference path='Snowman' />
@@ -477,11 +628,13 @@ var Winter;
             for (var i in this.orders) {
                 if (this.orders[i].verify(hatKey, noseKey, clotheKey, woodKey)) {
                     //return console.log('victory !')
-                    this.orders[i].destroy();
+                    //this.orders[i].destroy()
+                    this.orders[i].valid();
                     delete this.orders[i];
+                    this.snowman.liveeeee();
                     // Destroy all !
-                    this.game.time.events.add(Phaser.Timer.SECOND * 1, function () {
-                        _this.snowman.reset();
+                    this.game.time.events.add(Phaser.Timer.SECOND * 2, function () {
+                        //this.snowman.reset()
                         _this.newOrder();
                     }, this);
                 }
@@ -490,107 +643,6 @@ var Winter;
         return Play;
     })(Phaser.State);
     Winter.Play = Play;
-})(Winter || (Winter = {}));
-/// <reference path='d/phaser' />
-var Winter;
-(function (Winter) {
-    var Boot = (function (_super) {
-        __extends(Boot, _super);
-        function Boot() {
-            _super.apply(this, arguments);
-        }
-        Boot.prototype.preload = function () {
-            this.game.load.image('moon', 'assets/moon.png');
-        };
-        Boot.prototype.create = function () {
-            this.game.state.start('loader');
-        };
-        return Boot;
-    })(Phaser.State);
-    Winter.Boot = Boot;
-})(Winter || (Winter = {}));
-/// <reference path='d/phaser' />
-var Winter;
-(function (Winter) {
-    var Loader = (function (_super) {
-        __extends(Loader, _super);
-        function Loader() {
-            _super.apply(this, arguments);
-        }
-        Loader.prototype.loadAssets = function () {
-            var ress = [
-                'blue_scarf',
-                'red_scarf',
-                'green_scarf',
-                'purple_scarf',
-                'blue_scarf_hanging',
-                'red_scarf_hanging',
-                'green_scarf_hanging',
-                'purple_scarf_hanging',
-                'blue_scarf_weared',
-                'red_scarf_weared',
-                'green_scarf_weared',
-                'purple_scarf_weared',
-                'carrot',
-                'pouet_pouet',
-                'bucket_carrot',
-                'bucket_red',
-                'carrot_weared',
-                'pouet_pouet_weared',
-                'christmas_hat',
-                'high_hat',
-                'melon_hat',
-                'flat_hat',
-                'christmas_hat_hanging',
-                'high_hat_hanging',
-                'melon_hat_hanging',
-                'flat_hat_hanging',
-                'christmas_hat_weared',
-                'high_hat_weared',
-                'melon_hat_weared',
-                'flat_hat_weared',
-                'wood_1',
-                'wood_2',
-                'wood_3',
-                'wood_1_sorted',
-                'wood_2_sorted',
-                'wood_3_sorted',
-                'wood_1_weared',
-                'wood_2_weared',
-                'wood_3_weared',
-                'clothes_stand',
-                'hat_stand',
-                'bubble',
-                'cloud',
-                'eyes',
-                'snow',
-                'snowman'
-            ];
-            for (var i in ress) {
-                this.load.image(ress[i], 'assets/' + ress[i] + '.png');
-            }
-            this.load.start();
-        };
-        Loader.prototype.create = function () {
-            this.mask = this.game.add.graphics(32, 32);
-            this.mask.beginFill(0);
-            this.mask.drawRect(0, 0, 100, 100);
-            this.mask.scale.y = 0;
-            var moon = this.game.add.sprite(32, 32, 'moon');
-            moon.mask = this.mask;
-            this.game.load.onFileComplete.add(this.fileComplete, this);
-            this.game.load.onLoadComplete.add(this.loadComplete, this);
-            this.loadAssets();
-        };
-        Loader.prototype.fileComplete = function (progress, cacheKey, success, totalLoaded, totalFiles) {
-            this.mask.scale.y = progress / 100;
-        };
-        Loader.prototype.loadComplete = function () {
-            this.game.state.start('play');
-        };
-        return Loader;
-    })(Phaser.State);
-    Winter.Loader = Loader;
 })(Winter || (Winter = {}));
 /// <reference path='d/phaser' />
 /// <reference path='Boot' />

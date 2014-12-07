@@ -61,6 +61,7 @@ module Winter {
 				'clothes_stand',
 				'hat_stand',
 				'bubble',
+				'valid',
 				'cloud',
 				'eyes',
 				'snow',

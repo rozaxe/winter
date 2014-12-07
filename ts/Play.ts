@@ -65,12 +65,14 @@ module Winter {
 			for (var i in this.orders) {
 				if (this.orders[i].verify(hatKey, noseKey, clotheKey, woodKey)) {
 					//return console.log('victory !')
-					this.orders[i].destroy()
+					//this.orders[i].destroy()
+					this.orders[i].valid()
 					delete this.orders[i]
+					this.snowman.liveeeee()
 
 					// Destroy all !
-					this.game.time.events.add(Phaser.Timer.SECOND * 1, () => {
-						this.snowman.reset()
+					this.game.time.events.add(Phaser.Timer.SECOND * 2, () => {
+						//this.snowman.reset()
 						this.newOrder()
 					}, this)
 				}
