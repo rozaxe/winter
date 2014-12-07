@@ -7,6 +7,24 @@ var __extends = this.__extends || function (d, b) {
 };
 var Winter;
 (function (Winter) {
+    var Boot = (function (_super) {
+        __extends(Boot, _super);
+        function Boot() {
+            _super.apply(this, arguments);
+        }
+        Boot.prototype.preload = function () {
+            this.game.load.image('moon', 'assets/moon.png');
+        };
+        Boot.prototype.create = function () {
+            this.game.state.start('loader');
+        };
+        return Boot;
+    })(Phaser.State);
+    Winter.Boot = Boot;
+})(Winter || (Winter = {}));
+/// <reference path='d/phaser' />
+var Winter;
+(function (Winter) {
     var Loader = (function (_super) {
         __extends(Loader, _super);
         function Loader() {
@@ -86,25 +104,6 @@ var Winter;
         return Loader;
     })(Phaser.State);
     Winter.Loader = Loader;
-})(Winter || (Winter = {}));
-/// <reference path='d/phaser' />
-var Winter;
-(function (Winter) {
-    var Boot = (function (_super) {
-        __extends(Boot, _super);
-        function Boot() {
-            _super.apply(this, arguments);
-        }
-        Boot.prototype.preload = function () {
-            this.game.load.image('mask', 'assets/mask.png');
-            this.game.load.image('moon', 'assets/moon.png');
-        };
-        Boot.prototype.create = function () {
-            this.game.state.start('loader');
-        };
-        return Boot;
-    })(Phaser.State);
-    Winter.Boot = Boot;
 })(Winter || (Winter = {}));
 /// <reference path='d/phaser' />
 var Winter;

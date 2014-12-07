@@ -3,7 +3,6 @@
 module Winter {
 	export class Boot extends Phaser.State {
 		preload() {
-			this.game.load.image('mask', 'assets/mask.png')
 			this.game.load.image('moon', 'assets/moon.png')
 		}
 		create() {
