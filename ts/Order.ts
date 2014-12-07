@@ -9,12 +9,14 @@ module Winter {
 		woodKey: string
 
 		constructor(game: Phaser.Game, x: number, y: number) {
-			super(game, x, y, 'bubble')
+			super(game, Game.fullWidth, y, 'bubble')
 
 			this.randomOrder()
 			this.show()
 
 			this.game.add.existing(this)
+
+			this.game.add.tween(this).to({x: x}, 200, Phaser.Easing.Linear.None).start()
 		}
 
 		randomOrder() {

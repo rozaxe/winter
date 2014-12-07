@@ -18,7 +18,7 @@ module Winter {
 			super(game)
 			this.state = state
 			this.x = x
-			this.y = y
+			this.y = Game.fullHeight
 
 			this.snowman = this.game.add.sprite(0, 0, 'snowman', null, this)
 			this.snowman.anchor.x = 0.5
@@ -27,6 +27,8 @@ module Winter {
 			this.nose = this.game.add.sprite(0, 0)
 			this.clothe = this.game.add.sprite(0, 0)
 			this.wood = this.game.add.sprite(0, 0)
+
+			this.game.add.tween(this).to({y: y}, 1000, Phaser.Easing.Bounce.Out).delay(1200).start()
 		}
 
 		changeHat(key: string) {
@@ -69,11 +71,27 @@ module Winter {
 			this.check()
 		}
 
+		clean() {
+			[this.hat, this.nose, this.clothe, this.wood].forEach((x:Phaser.Sprite) => {
+				var tween = this.game.add.tween(x).to({alpha: 0}, 100)
+				tween.onComplete.add(() => {
+					x.destroy()
+				}, this)
+				tween.start()
+			})
+
+			this.hatKey = ''
+			this.noseKey = ''
+			this.clotheKey = ''
+			this.woodKey = ''
+		}
+
 		reset() {
 			this.hat.destroy()
 			this.nose.destroy()
 			this.clothe.destroy()
 			this.wood.destroy()
+
 			this.hatKey = ''
 			this.noseKey = ''
 			this.clotheKey = ''

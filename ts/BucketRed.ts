@@ -9,12 +9,11 @@ module Winter {
 		disY: number
 
 		constructor(game: Phaser.Game, x: number, y: number, snowman: Snowman) {
-			super(game, x, y, 'bucket_red')
+			super(game, x, Game.fullHeight, 'bucket_red')
 
 			this.snowman = snowman
-			this.disY = y
 
-			this.anchor.setTo(0.5)
+			this.anchor.setTo(0.5, 0)
 
 			this.drag = this.game.add.sprite(0, 0, 'pouet_pouet')
 			this.drag.anchor.setTo(0.5)
@@ -27,6 +26,8 @@ module Winter {
 			this.drag.events.onDragStop.add(this.dragStop, this)
 
 			this.game.add.existing(this)
+
+			this.game.add.tween(this).to({y: y}, 1000, Phaser.Easing.Bounce.Out).delay(1300).start()
 		}
 
 		dragStart() {

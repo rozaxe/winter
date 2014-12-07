@@ -7,7 +7,7 @@ module Winter {
 			super(game)
 
 			this.x = x
-			this.y = y
+			this.y = Game.fullHeight
 
 			var stand = this.game.add.sprite(0, 0, 'clothes_stand')
 			stand.anchor.x = 0.5
@@ -18,6 +18,8 @@ module Winter {
 			this.add(new Clothe(this.game, 45, 'red_scarf', snowman))
 			this.add(new Clothe(this.game, 75, 'purple_scarf', snowman))
 			//this.add(new Clothe(this.game, 105, 'green_scarf', snowman))
+
+			this.game.add.tween(this).to({y: y}, 1000, Phaser.Easing.Bounce.Out).delay(1100).start()
 		}
 	}
 }

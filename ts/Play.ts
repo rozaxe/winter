@@ -97,13 +97,17 @@ module Winter {
 			new Woods(this.game, 500 + Game.left, 490 + Game.top, this.snowman)
 			new Cloud(this.game, 400 + Game.left, 162 + Game.top, this.snowman)
 
-			this.newOrder()
+			this.game.time.events.add(Phaser.Timer.SECOND * 3, () => {
+				this.newOrder()
+			}, this)
 		}
 
 		createForground() {
 			var shape = this.game.add.graphics(0, 0)
 			shape.beginFill(0xBCDBE7)
 			shape.drawRect(0, 474 + Game.top, Game.fullWidth, 226 + Game.top)
+			shape.y = Game.fullHeight
+			this.game.add.tween(shape).to({y: 0}, 1000, Phaser.Easing.Bounce.Out).delay(100).start()
 		}
 
 		createBackground() {
@@ -114,6 +118,8 @@ module Winter {
 			shape.drawRect(0, 436 + Game.top, Game.fullWidth, 226 + Game.top)
 			shape.beginFill(0x8EB5C4)
 			shape.drawRect(0, 450 + Game.top, Game.fullWidth, 226 + Game.top)
+			shape.y = Game.fullHeight
+			this.game.add.tween(shape).to({y: 0}, 1000, Phaser.Easing.Bounce.Out).start()
 		}
 
 		newOrder() {

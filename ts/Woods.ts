@@ -7,11 +7,13 @@ module Winter {
 			super(game)
 
 			this.x = x
-			this.y = y
+			this.y = Game.fullHeight
 
 			this.add(new Wood(this.game, 15, 0, 'wood_3', snowman))
 			this.add(new Wood(this.game, 50, 25, 'wood_2', snowman))
 			this.add(new Wood(this.game, 0, 40, 'wood_1', snowman))
+
+			this.game.add.tween(this).to({y: y}, 1000, Phaser.Easing.Bounce.Out).delay(1111).start()
 		}
 	}
 }

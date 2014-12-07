@@ -7,6 +7,56 @@ var __extends = this.__extends || function (d, b) {
 };
 var Winter;
 (function (Winter) {
+    var Cloud = (function (_super) {
+        __extends(Cloud, _super);
+        function Cloud(game, x, y, snowman) {
+            _super.call(this, game);
+            this.x = x + 16;
+            this.y = 0;
+            this.snowman = snowman;
+            var cloud = this.game.add.sprite(0, 0, 'cloud');
+            cloud.anchor.setTo(0.5, 1);
+            cloud.inputEnabled = true;
+            cloud.input.useHandCursor = true;
+            cloud.events.onInputDown.add(this.reset, this);
+            this.add(cloud);
+            this.snow = this.game.add.sprite(0, 0, 'snow');
+            this.snow.anchor.x = 0.5;
+            this.snow.scale.y = 0;
+            this.snow.visible = false;
+            this.add(this.snow);
+            this.game.add.existing(this);
+            // Float
+            this.game.add.tween(this).to({ x: x - 16 }, 10000).to({ x: x + 16 }, 10000).loop().start();
+            // Appear
+            this.game.add.tween(this).to({ y: y }, 1000, Phaser.Easing.Bounce.Out).delay(1100).start();
+        }
+        Cloud.prototype.reset = function () {
+            var _this = this;
+            this.snow.visible = true;
+            var tween = this.game.add.tween(this.snow.scale);
+            tween.to({ y: (500 + Winter.Game.top) / 100 }, 200);
+            tween.onComplete.add(function () {
+                _this.snowman.clean();
+                var tween = _this.game.add.tween(_this.snow);
+                tween.to({ y: Winter.Game.fullHeight }, 200);
+                tween.delay(300);
+                tween.onComplete.add(function () {
+                    _this.snow.visible = false;
+                    _this.snow.scale.y = 0;
+                    _this.snow.y = 0;
+                }, _this);
+                tween.start();
+            }, this);
+            tween.start();
+        };
+        return Cloud;
+    })(Phaser.Group);
+    Winter.Cloud = Cloud;
+})(Winter || (Winter = {}));
+/// <reference path='d/phaser' />
+var Winter;
+(function (Winter) {
     var Snowman = (function (_super) {
         __extends(Snowman, _super);
         function Snowman(game, x, y, state) {
@@ -17,13 +67,14 @@ var Winter;
             this.woodKey = '';
             this.state = state;
             this.x = x;
-            this.y = y;
+            this.y = Winter.Game.fullHeight;
             this.snowman = this.game.add.sprite(0, 0, 'snowman', null, this);
             this.snowman.anchor.x = 0.5;
             this.hat = this.game.add.sprite(0, 0);
             this.nose = this.game.add.sprite(0, 0);
             this.clothe = this.game.add.sprite(0, 0);
             this.wood = this.game.add.sprite(0, 0);
+            this.game.add.tween(this).to({ y: y }, 1000, Phaser.Easing.Bounce.Out).delay(1200).start();
         }
         Snowman.prototype.changeHat = function (key) {
             this.hat.destroy();
@@ -52,6 +103,20 @@ var Winter;
             this.wood.anchor.x = 0.5;
             this.woodKey = key;
             this.check();
+        };
+        Snowman.prototype.clean = function () {
+            var _this = this;
+            [this.hat, this.nose, this.clothe, this.wood].forEach(function (x) {
+                var tween = _this.game.add.tween(x).to({ alpha: 0 }, 100);
+                tween.onComplete.add(function () {
+                    x.destroy();
+                }, _this);
+                tween.start();
+            });
+            this.hatKey = '';
+            this.noseKey = '';
+            this.clotheKey = '';
+            this.woodKey = '';
         };
         Snowman.prototype.reset = function () {
             this.hat.destroy();
@@ -113,7 +178,7 @@ var Winter;
         function HatStand(game, x, y, snowman) {
             _super.call(this, game);
             this.x = x;
-            this.y = y;
+            this.y = Winter.Game.fullHeight;
             var stand = this.game.add.sprite(0, 0, 'hat_stand');
             stand.anchor.x = 0.5;
             this.add(stand);
@@ -121,6 +186,7 @@ var Winter;
             this.add(new Winter.Hat(this.game, 45, 'christmas_hat', 1, snowman));
             //this.add(new Hat(this.game, 75, 'melon_hat', 0, snowman))
             //this.add(new Hat(this.game, 105, 'flat_hat', 1, snowman))
+            this.game.add.tween(this).to({ y: y }, 1000, Phaser.Easing.Bounce.Out).delay(1300).start();
         }
         return HatStand;
     })(Phaser.Group);
@@ -169,7 +235,7 @@ var Winter;
         function ClothesStand(game, x, y, snowman) {
             _super.call(this, game);
             this.x = x;
-            this.y = y;
+            this.y = Winter.Game.fullHeight;
             var stand = this.game.add.sprite(0, 0, 'clothes_stand');
             stand.anchor.x = 0.5;
             this.add(stand);
@@ -177,6 +243,7 @@ var Winter;
             this.add(new Winter.Clothe(this.game, 45, 'red_scarf', snowman));
             this.add(new Winter.Clothe(this.game, 75, 'purple_scarf', snowman));
             //this.add(new Clothe(this.game, 105, 'green_scarf', snowman))
+            this.game.add.tween(this).to({ y: y }, 1000, Phaser.Easing.Bounce.Out).delay(1100).start();
         }
         return ClothesStand;
     })(Phaser.Group);
@@ -188,10 +255,11 @@ var Winter;
     var Order = (function (_super) {
         __extends(Order, _super);
         function Order(game, x, y) {
-            _super.call(this, game, x, y, 'bubble');
+            _super.call(this, game, Winter.Game.fullWidth, y, 'bubble');
             this.randomOrder();
             this.show();
             this.game.add.existing(this);
+            this.game.add.tween(this).to({ x: x }, 200, Phaser.Easing.Linear.None).start();
         }
         Order.prototype.randomOrder = function () {
             do {
@@ -235,10 +303,9 @@ var Winter;
     var BucketCarrot = (function (_super) {
         __extends(BucketCarrot, _super);
         function BucketCarrot(game, x, y, snowman) {
-            _super.call(this, game, x, y, 'bucket_carrot');
+            _super.call(this, game, x, Winter.Game.fullHeight, 'bucket_carrot');
             this.snowman = snowman;
-            this.disY = y;
-            this.anchor.setTo(0.5);
+            this.anchor.setTo(0.5, 0);
             this.drag = this.game.add.sprite(0, 0, 'carrot');
             this.drag.anchor.setTo(0.5);
             this.addChild(this.drag);
@@ -248,6 +315,7 @@ var Winter;
             this.drag.events.onDragStart.add(this.dragStart, this);
             this.drag.events.onDragStop.add(this.dragStop, this);
             this.game.add.existing(this);
+            this.game.add.tween(this).to({ y: y }, 1000, Phaser.Easing.Bounce.Out).delay(1200).start();
         }
         BucketCarrot.prototype.dragStart = function () {
             this.drag.alpha = 1;
@@ -270,10 +338,9 @@ var Winter;
     var BucketRed = (function (_super) {
         __extends(BucketRed, _super);
         function BucketRed(game, x, y, snowman) {
-            _super.call(this, game, x, y, 'bucket_red');
+            _super.call(this, game, x, Winter.Game.fullHeight, 'bucket_red');
             this.snowman = snowman;
-            this.disY = y;
-            this.anchor.setTo(0.5);
+            this.anchor.setTo(0.5, 0);
             this.drag = this.game.add.sprite(0, 0, 'pouet_pouet');
             this.drag.anchor.setTo(0.5);
             this.addChild(this.drag);
@@ -283,6 +350,7 @@ var Winter;
             this.drag.events.onDragStart.add(this.dragStart, this);
             this.drag.events.onDragStop.add(this.dragStop, this);
             this.game.add.existing(this);
+            this.game.add.tween(this).to({ y: y }, 1000, Phaser.Easing.Bounce.Out).delay(1300).start();
         }
         BucketRed.prototype.dragStart = function () {
             this.drag.alpha = 1;
@@ -340,44 +408,15 @@ var Winter;
         function Woods(game, x, y, snowman) {
             _super.call(this, game);
             this.x = x;
-            this.y = y;
+            this.y = Winter.Game.fullHeight;
             this.add(new Winter.Wood(this.game, 15, 0, 'wood_3', snowman));
             this.add(new Winter.Wood(this.game, 50, 25, 'wood_2', snowman));
             this.add(new Winter.Wood(this.game, 0, 40, 'wood_1', snowman));
+            this.game.add.tween(this).to({ y: y }, 1000, Phaser.Easing.Bounce.Out).delay(1111).start();
         }
         return Woods;
     })(Phaser.Group);
     Winter.Woods = Woods;
-})(Winter || (Winter = {}));
-/// <reference path='d/phaser' />
-var Winter;
-(function (Winter) {
-    var Cloud = (function (_super) {
-        __extends(Cloud, _super);
-        function Cloud(game, x, y, snowman) {
-            _super.call(this, game);
-            this.x = x;
-            this.y = y;
-            this.snowman = snowman;
-            var cloud = this.game.add.sprite(0, 0, 'cloud');
-            cloud.anchor.setTo(0.5, 1);
-            cloud.inputEnabled = true;
-            cloud.input.useHandCursor = true;
-            cloud.events.onInputDown.add(this.reset, this);
-            this.add(cloud);
-            this.snow = this.game.add.sprite(0, 0, 'snow');
-            this.snow.anchor.x = 0.5;
-            this.snow.scale.y = 0;
-            this.snow.visible = false;
-            this.add(this.snow);
-            this.game.add.existing(this);
-        }
-        Cloud.prototype.reset = function () {
-            this.snowman.reset();
-        };
-        return Cloud;
-    })(Phaser.Group);
-    Winter.Cloud = Cloud;
 })(Winter || (Winter = {}));
 /// <reference path='d/phaser' />
 /// <reference path='HatStand' />
@@ -450,6 +489,7 @@ var Winter;
             }
         };
         Play.prototype.create = function () {
+            var _this = this;
             this.createBackground();
             this.snowman = new Winter.Snowman(this.game, 400 + Winter.Game.left, 232 + Winter.Game.top, this);
             new Winter.HatStand(this.game, 98 + Winter.Game.left, 260 + Winter.Game.top, this.snowman);
@@ -459,12 +499,16 @@ var Winter;
             new Winter.BucketRed(this.game, 202 + Winter.Game.left, 535 + Winter.Game.top, this.snowman);
             new Winter.Woods(this.game, 500 + Winter.Game.left, 490 + Winter.Game.top, this.snowman);
             new Winter.Cloud(this.game, 400 + Winter.Game.left, 162 + Winter.Game.top, this.snowman);
-            this.newOrder();
+            this.game.time.events.add(Phaser.Timer.SECOND * 3, function () {
+                _this.newOrder();
+            }, this);
         };
         Play.prototype.createForground = function () {
             var shape = this.game.add.graphics(0, 0);
             shape.beginFill(0xBCDBE7);
             shape.drawRect(0, 474 + Winter.Game.top, Winter.Game.fullWidth, 226 + Winter.Game.top);
+            shape.y = Winter.Game.fullHeight;
+            this.game.add.tween(shape).to({ y: 0 }, 1000, Phaser.Easing.Bounce.Out).delay(100).start();
         };
         Play.prototype.createBackground = function () {
             var shape = this.game.add.graphics(0, 0);
@@ -474,6 +518,8 @@ var Winter;
             shape.drawRect(0, 436 + Winter.Game.top, Winter.Game.fullWidth, 226 + Winter.Game.top);
             shape.beginFill(0x8EB5C4);
             shape.drawRect(0, 450 + Winter.Game.top, Winter.Game.fullWidth, 226 + Winter.Game.top);
+            shape.y = Winter.Game.fullHeight;
+            this.game.add.tween(shape).to({ y: 0 }, 1000, Phaser.Easing.Bounce.Out).start();
         };
         Play.prototype.newOrder = function () {
             this.orders.push(new Winter.Order(this.game, Winter.Game.fullWidth - 174, 262 + Winter.Game.top));
