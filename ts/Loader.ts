@@ -71,6 +71,8 @@ module Winter {
 			for (var i in ress) {
 				this.load.image(ress[i], 'assets/' + ress[i] + '.png')
 			}
+			this.load.spritesheet('confetti', 'assets/confetti.png', 4, 4)
+
 			this.load.start()
 		}
 		create() {

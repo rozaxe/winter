@@ -14,6 +14,11 @@ module Winter {
 
 		orders: Order[] = []
 		snowman: Snowman
+		hatStand: HatStand
+		clothesStand: ClothesStand
+		woods: Woods
+
+		toAdd: Array<any>
 
 		create() {
 			this.game.add.sprite(32, 32, 'moon')
@@ -21,20 +26,27 @@ module Winter {
 			this.createBackground()
 
 			this.snowman = new Snowman(this.game, 400 + Game.left, 232 + Game.top, this)
-			new HatStand(this.game, 98 + Game.left, 260 + Game.top, this.snowman)
-			new ClothesStand(this.game, 232 + Game.left, 260 + Game.top, this.snowman)
+			this.hatStand = new HatStand(this.game, 98 + Game.left, 260 + Game.top, this.snowman)
+			this.clothesStand = new ClothesStand(this.game, 232 + Game.left, 260 + Game.top, this.snowman)
 
 			this.createForground()
 
 			new BucketCarrot(this.game, 282 + Game.left, 515 + Game.top, this.snowman)
 			new BucketRed(this.game, 202 + Game.left, 535 + Game.top, this.snowman)
 
-			new Woods(this.game, 500 + Game.left, 490 + Game.top, this.snowman)
+			this.woods = new Woods(this.game, 500 + Game.left, 490 + Game.top, this.snowman)
 			new Cloud(this.game, 400 + Game.left, 162 + Game.top, this.snowman)
 
 			this.game.time.events.add(Phaser.Timer.SECOND * 3, () => {
-				this.newOrder()
+				this.newOrder(true)
 			}, this)
+
+			this.toAdd = [
+				this.hatStand, this.hatStand.addFlat,
+				this.clothesStand, this.clothesStand.addClothe,
+				this.woods, this.woods.addWood,
+				this.hatStand, this.hatStand.addMelon,
+			]
 		}
 
 		createForground() {
@@ -57,22 +69,25 @@ module Winter {
 			this.game.add.tween(shape).to({y: 0}, 1000, Phaser.Easing.Bounce.Out).start()
 		}
 
-		newOrder() {
-			this.orders.push(new Order(this.game, Game.fullWidth - 174, 262 + Game.top))
+		newOrder(first?: boolean) {
+			this.orders.push(new Order(this.game, Game.fullWidth - 174, 262 + Game.top, first))
 		}
 
 		checkOrder(hatKey: string, noseKey: string, clotheKey: string, woodKey: string) {
 			for (var i in this.orders) {
 				if (this.orders[i].verify(hatKey, noseKey, clotheKey, woodKey)) {
-					//return console.log('victory !')
-					//this.orders[i].destroy()
 					this.orders[i].valid()
 					delete this.orders[i]
 					this.snowman.liveeeee()
 
-					// Destroy all !
+					if (this.toAdd.length > 0) {
+						var func = this.toAdd.pop()
+						var name = this.toAdd.pop()
+						func.call(name)
+					}
+
+					// New order
 					this.game.time.events.add(Phaser.Timer.SECOND * 2, () => {
-						//this.snowman.reset()
 						this.newOrder()
 					}, this)
 				}

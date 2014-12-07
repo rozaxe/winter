@@ -8,10 +8,14 @@ module Winter {
 		clotheKey: string
 		woodKey: string
 
-		constructor(game: Phaser.Game, x: number, y: number) {
+		constructor(game: Phaser.Game, x: number, y: number, first?: boolean) {
 			super(game, Game.fullWidth, y, 'bubble')
 
-			this.randomOrder()
+			if (first) {
+				this.firstOrder()
+			} else {
+				this.randomOrder()
+			}
 			this.show()
 
 			this.game.add.existing(this)
@@ -19,20 +23,19 @@ module Winter {
 			this.game.add.tween(this).to({x: x}, 200, Phaser.Easing.Linear.None).start()
 		}
 
+		firstOrder() {
+			this.hatKey = 'high_hat'
+			this.clotheKey = ''
+			this.noseKey = 'carrot'
+			this.woodKey = ''
+		}
+
 		randomOrder() {
 			do {
-				this.hatKey = this.game.rnd.pick(['', 'high_hat', 'christmas_hat'])
+				this.hatKey = this.game.rnd.pick(HatStand.available)
 				this.noseKey = this.game.rnd.pick(['', 'carrot', 'pouet_pouet'])
-				this.clotheKey = this.game.rnd.pick(['', 'blue_scarf', 'red_scarf', 'purple_scarf'])
-				this.woodKey = this.game.rnd.pick(['', 'wood_1', 'wood_2', 'wood_3'])
-
-				//*
-				this.hatKey = 'high_hat'
-				this.clotheKey = ''
-				this.noseKey = ''
-				this.woodKey = ''
-				//*/
-
+				this.clotheKey = this.game.rnd.pick(ClothesStand.available)
+				this.woodKey = this.game.rnd.pick(Woods.available)
 			} while (this.hatKey == '' && this.noseKey == '' && this.clotheKey == '' && this.woodKey == '')
 		}
 

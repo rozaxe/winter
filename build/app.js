@@ -9,24 +9,30 @@ var Winter;
 (function (Winter) {
     var Order = (function (_super) {
         __extends(Order, _super);
-        function Order(game, x, y) {
+        function Order(game, x, y, first) {
             _super.call(this, game, Winter.Game.fullWidth, y, 'bubble');
-            this.randomOrder();
+            if (first) {
+                this.firstOrder();
+            }
+            else {
+                this.randomOrder();
+            }
             this.show();
             this.game.add.existing(this);
             this.game.add.tween(this).to({ x: x }, 200, Phaser.Easing.Linear.None).start();
         }
+        Order.prototype.firstOrder = function () {
+            this.hatKey = 'high_hat';
+            this.clotheKey = '';
+            this.noseKey = 'carrot';
+            this.woodKey = '';
+        };
         Order.prototype.randomOrder = function () {
             do {
-                this.hatKey = this.game.rnd.pick(['', 'high_hat', 'christmas_hat']);
+                this.hatKey = this.game.rnd.pick(Winter.HatStand.available);
                 this.noseKey = this.game.rnd.pick(['', 'carrot', 'pouet_pouet']);
-                this.clotheKey = this.game.rnd.pick(['', 'blue_scarf', 'red_scarf', 'purple_scarf']);
-                this.woodKey = this.game.rnd.pick(['', 'wood_1', 'wood_2', 'wood_3']);
-                //*
-                this.hatKey = 'high_hat';
-                this.clotheKey = '';
-                this.noseKey = '';
-                this.woodKey = '';
+                this.clotheKey = this.game.rnd.pick(Winter.ClothesStand.available);
+                this.woodKey = this.game.rnd.pick(Winter.Woods.available);
             } while (this.hatKey == '' && this.noseKey == '' && this.clotheKey == '' && this.woodKey == '');
         };
         Order.prototype.show = function () {
@@ -150,6 +156,7 @@ var Winter;
             for (var i in ress) {
                 this.load.image(ress[i], 'assets/' + ress[i] + '.png');
             }
+            this.load.spritesheet('confetti', 'assets/confetti.png', 4, 4);
             this.load.start();
         };
         Loader.prototype.create = function () {
@@ -325,6 +332,7 @@ var Winter;
         __extends(HatStand, _super);
         function HatStand(game, x, y, snowman) {
             _super.call(this, game);
+            this.snowman = snowman;
             this.x = x;
             this.y = Winter.Game.fullHeight;
             var stand = this.game.add.sprite(0, 0, 'hat_stand');
@@ -332,10 +340,31 @@ var Winter;
             this.add(stand);
             this.add(new Winter.Hat(this.game, 15, 'high_hat', 0, snowman));
             this.add(new Winter.Hat(this.game, 45, 'christmas_hat', 1, snowman));
-            //this.add(new Hat(this.game, 75, 'melon_hat', 0, snowman))
-            //this.add(new Hat(this.game, 105, 'flat_hat', 1, snowman))
             this.game.add.tween(this).to({ y: y }, 1000, Phaser.Easing.Bounce.Out).delay(1300).start();
         }
+        HatStand.prototype.addMelon = function () {
+            this.add(new Winter.Hat(this.game, 75, 'melon_hat', 0, this.snowman));
+            HatStand.available.push('melon_hat');
+            var emitter = this.game.add.emitter(16, 85, 20);
+            emitter.makeParticles('confetti', [0, 1, 2, 3]);
+            emitter.start(false, 3000, 20);
+            this.game.time.events.add(Phaser.Timer.SECOND * 1, function () {
+                emitter.on = false;
+            }, this);
+            this.add(emitter);
+        };
+        HatStand.prototype.addFlat = function () {
+            this.add(new Winter.Hat(this.game, 105, 'flat_hat', 1, this.snowman));
+            HatStand.available.push('flat_hat');
+            var emitter = this.game.add.emitter(-32, 120, 20);
+            emitter.makeParticles('confetti', [0, 1, 2, 3]);
+            emitter.start(false, 3000, 20);
+            this.game.time.events.add(Phaser.Timer.SECOND * 1, function () {
+                emitter.on = false;
+            }, this);
+            this.add(emitter);
+        };
+        HatStand.available = ['', 'high_hat', 'christmas_hat'];
         return HatStand;
     })(Phaser.Group);
     Winter.HatStand = HatStand;
@@ -382,6 +411,7 @@ var Winter;
         __extends(ClothesStand, _super);
         function ClothesStand(game, x, y, snowman) {
             _super.call(this, game);
+            this.snowman = snowman;
             this.x = x;
             this.y = Winter.Game.fullHeight;
             var stand = this.game.add.sprite(0, 0, 'clothes_stand');
@@ -390,9 +420,20 @@ var Winter;
             this.add(new Winter.Clothe(this.game, 15, 'blue_scarf', snowman));
             this.add(new Winter.Clothe(this.game, 45, 'red_scarf', snowman));
             this.add(new Winter.Clothe(this.game, 75, 'purple_scarf', snowman));
-            //this.add(new Clothe(this.game, 105, 'green_scarf', snowman))
             this.game.add.tween(this).to({ y: y }, 1000, Phaser.Easing.Bounce.Out).delay(1100).start();
         }
+        ClothesStand.prototype.addClothe = function () {
+            this.add(new Winter.Clothe(this.game, 105, 'green_scarf', this.snowman));
+            ClothesStand.available.push('green_scarf');
+            var emitter = this.game.add.emitter(0, 120, 20);
+            emitter.makeParticles('confetti', [0, 1, 2, 3]);
+            emitter.start(false, 3000, 20);
+            this.game.time.events.add(Phaser.Timer.SECOND * 1, function () {
+                emitter.on = false;
+            }, this);
+            this.add(emitter);
+        };
+        ClothesStand.available = ['', 'blue_scarf', 'red_scarf', 'purple_scarf'];
         return ClothesStand;
     })(Phaser.Group);
     Winter.ClothesStand = ClothesStand;
@@ -508,13 +549,25 @@ var Winter;
         __extends(Woods, _super);
         function Woods(game, x, y, snowman) {
             _super.call(this, game);
+            this.snowman = snowman;
             this.x = x;
             this.y = Winter.Game.fullHeight;
             this.add(new Winter.Wood(this.game, 15, 0, 'wood_3', snowman));
-            this.add(new Winter.Wood(this.game, 50, 25, 'wood_2', snowman));
             this.add(new Winter.Wood(this.game, 0, 40, 'wood_1', snowman));
             this.game.add.tween(this).to({ y: y }, 1000, Phaser.Easing.Bounce.Out).delay(1111).start();
         }
+        Woods.prototype.addWood = function () {
+            this.add(new Winter.Wood(this.game, 50, 25, 'wood_2', this.snowman));
+            Woods.available.push('wood_2');
+            var emitter = this.game.add.emitter(75, 25, 20);
+            emitter.makeParticles('confetti', [0, 1, 2, 3]);
+            emitter.start(false, 3000, 20);
+            this.game.time.events.add(Phaser.Timer.SECOND * 1, function () {
+                emitter.on = false;
+            }, this);
+            this.add(emitter);
+        };
+        Woods.available = ['', 'wood_3', 'wood_1'];
         return Woods;
     })(Phaser.Group);
     Winter.Woods = Woods;
@@ -591,16 +644,26 @@ var Winter;
             this.game.add.sprite(32, 32, 'moon');
             this.createBackground();
             this.snowman = new Winter.Snowman(this.game, 400 + Winter.Game.left, 232 + Winter.Game.top, this);
-            new Winter.HatStand(this.game, 98 + Winter.Game.left, 260 + Winter.Game.top, this.snowman);
-            new Winter.ClothesStand(this.game, 232 + Winter.Game.left, 260 + Winter.Game.top, this.snowman);
+            this.hatStand = new Winter.HatStand(this.game, 98 + Winter.Game.left, 260 + Winter.Game.top, this.snowman);
+            this.clothesStand = new Winter.ClothesStand(this.game, 232 + Winter.Game.left, 260 + Winter.Game.top, this.snowman);
             this.createForground();
             new Winter.BucketCarrot(this.game, 282 + Winter.Game.left, 515 + Winter.Game.top, this.snowman);
             new Winter.BucketRed(this.game, 202 + Winter.Game.left, 535 + Winter.Game.top, this.snowman);
-            new Winter.Woods(this.game, 500 + Winter.Game.left, 490 + Winter.Game.top, this.snowman);
+            this.woods = new Winter.Woods(this.game, 500 + Winter.Game.left, 490 + Winter.Game.top, this.snowman);
             new Winter.Cloud(this.game, 400 + Winter.Game.left, 162 + Winter.Game.top, this.snowman);
             this.game.time.events.add(Phaser.Timer.SECOND * 3, function () {
-                _this.newOrder();
+                _this.newOrder(true);
             }, this);
+            this.toAdd = [
+                this.hatStand,
+                this.hatStand.addFlat,
+                this.clothesStand,
+                this.clothesStand.addClothe,
+                this.woods,
+                this.woods.addWood,
+                this.hatStand,
+                this.hatStand.addMelon,
+            ];
         };
         Play.prototype.createForground = function () {
             var shape = this.game.add.graphics(0, 0);
@@ -620,21 +683,23 @@ var Winter;
             shape.y = Winter.Game.fullHeight;
             this.game.add.tween(shape).to({ y: 0 }, 1000, Phaser.Easing.Bounce.Out).start();
         };
-        Play.prototype.newOrder = function () {
-            this.orders.push(new Winter.Order(this.game, Winter.Game.fullWidth - 174, 262 + Winter.Game.top));
+        Play.prototype.newOrder = function (first) {
+            this.orders.push(new Winter.Order(this.game, Winter.Game.fullWidth - 174, 262 + Winter.Game.top, first));
         };
         Play.prototype.checkOrder = function (hatKey, noseKey, clotheKey, woodKey) {
             var _this = this;
             for (var i in this.orders) {
                 if (this.orders[i].verify(hatKey, noseKey, clotheKey, woodKey)) {
-                    //return console.log('victory !')
-                    //this.orders[i].destroy()
                     this.orders[i].valid();
                     delete this.orders[i];
                     this.snowman.liveeeee();
-                    // Destroy all !
+                    if (this.toAdd.length > 0) {
+                        var func = this.toAdd.pop();
+                        var name = this.toAdd.pop();
+                        func.call(name);
+                    }
+                    // New order
                     this.game.time.events.add(Phaser.Timer.SECOND * 2, function () {
-                        //this.snowman.reset()
                         _this.newOrder();
                     }, this);
                 }
