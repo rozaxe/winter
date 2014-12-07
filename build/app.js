@@ -548,6 +548,7 @@ var Winter;
             new Winter.BucketRed(this.game, 202 + Winter.Game.left, 535 + Winter.Game.top, this.snowman);
             this.woods = new Winter.Woods(this.game, 500 + Winter.Game.left, 490 + Winter.Game.top, this.snowman);
             new Winter.Cloud(this.game, 400 + Winter.Game.left, 162 + Winter.Game.top, this.snowman);
+            this.createSnow();
             this.game.time.events.add(Phaser.Timer.SECOND * 3, function () {
                 _this.newOrder(true);
             }, this);
@@ -561,6 +562,18 @@ var Winter;
                 this.hatStand,
                 this.hatStand.addMelon,
             ];
+        };
+        Play.prototype.createSnow = function () {
+            var back_emitter = this.game.add.emitter(Winter.Game.left + 400, -32, 500);
+            back_emitter.makeParticles('snowflakes', [0, 1]);
+            back_emitter.maxParticleScale = 0.5;
+            back_emitter.minParticleScale = 0.2;
+            back_emitter.setYSpeed(20, 100);
+            back_emitter.gravity = 0;
+            back_emitter.width = Winter.Game.fullWidth * 1.5;
+            back_emitter.minRotation = 0;
+            back_emitter.maxRotation = 40;
+            back_emitter.start(false, 14000, 30);
         };
         Play.prototype.createForground = function () {
             var shape = this.game.add.graphics(0, 0);
@@ -618,7 +631,8 @@ var Winter;
             _super.apply(this, arguments);
         }
         Boot.prototype.preload = function () {
-            this.game.load.image('moon', 'assets/moon.png');
+            this.load.image('moon', 'assets/moon.png');
+            this.load.spritesheet('snowflakes', 'assets/snowflakes.png', 16, 16);
         };
         Boot.prototype.create = function () {
             this.game.state.start('loader');

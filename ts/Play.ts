@@ -37,6 +37,8 @@ module Winter {
 			this.woods = new Woods(this.game, 500 + Game.left, 490 + Game.top, this.snowman)
 			new Cloud(this.game, 400 + Game.left, 162 + Game.top, this.snowman)
 
+			this.createSnow()
+			
 			this.game.time.events.add(Phaser.Timer.SECOND * 3, () => {
 				this.newOrder(true)
 			}, this)
@@ -47,6 +49,19 @@ module Winter {
 				this.woods, this.woods.addWood,
 				this.hatStand, this.hatStand.addMelon,
 			]
+		}
+
+		createSnow() {
+			var back_emitter = this.game.add.emitter(Game.left + 400, -32, 500)
+			back_emitter.makeParticles('snowflakes', [0, 1])
+			back_emitter.maxParticleScale = 0.5
+			back_emitter.minParticleScale = 0.2
+			back_emitter.setYSpeed(20, 100)
+			back_emitter.gravity = 0
+			back_emitter.width = Game.fullWidth * 1.5
+			back_emitter.minRotation = 0
+			back_emitter.maxRotation = 40
+			back_emitter.start(false, 14000, 30);
 		}
 
 		createForground() {
