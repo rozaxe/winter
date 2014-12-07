@@ -450,34 +450,33 @@ var Winter;
             }
         };
         Play.prototype.create = function () {
-            this.game.stage.backgroundColor = 0x011C40;
             this.createBackground();
-            this.snowman = new Winter.Snowman(this.game, 400, 232, this);
-            new Winter.HatStand(this.game, 98, 260, this.snowman);
-            new Winter.ClothesStand(this.game, 232, 260, this.snowman);
+            this.snowman = new Winter.Snowman(this.game, 400 + Winter.Game.left, 232 + Winter.Game.top, this);
+            new Winter.HatStand(this.game, 98 + Winter.Game.left, 260 + Winter.Game.top, this.snowman);
+            new Winter.ClothesStand(this.game, 232 + Winter.Game.left, 260 + Winter.Game.top, this.snowman);
             this.createForground();
-            new Winter.BucketCarrot(this.game, 282, 515, this.snowman);
-            new Winter.BucketRed(this.game, 202, 535, this.snowman);
-            new Winter.Woods(this.game, 500, 490, this.snowman);
-            new Winter.Cloud(this.game, 400, 162, this.snowman);
+            new Winter.BucketCarrot(this.game, 282 + Winter.Game.left, 515 + Winter.Game.top, this.snowman);
+            new Winter.BucketRed(this.game, 202 + Winter.Game.left, 535 + Winter.Game.top, this.snowman);
+            new Winter.Woods(this.game, 500 + Winter.Game.left, 490 + Winter.Game.top, this.snowman);
+            new Winter.Cloud(this.game, 400 + Winter.Game.left, 162 + Winter.Game.top, this.snowman);
             this.newOrder();
         };
         Play.prototype.createForground = function () {
             var shape = this.game.add.graphics(0, 0);
             shape.beginFill(0xBCDBE7);
-            shape.drawRect(0, 474, 800, 300);
+            shape.drawRect(0, 474 + Winter.Game.top, Winter.Game.fullWidth, 226 + Winter.Game.top);
         };
         Play.prototype.createBackground = function () {
             var shape = this.game.add.graphics(0, 0);
             shape.beginFill(0x496586);
-            shape.drawRect(0, 426, 800, 300);
+            shape.drawRect(0, 426 + Winter.Game.top, Winter.Game.fullWidth, 226 + Winter.Game.top);
             shape.beginFill(0x6984A2);
-            shape.drawRect(0, 436, 800, 300);
+            shape.drawRect(0, 436 + Winter.Game.top, Winter.Game.fullWidth, 226 + Winter.Game.top);
             shape.beginFill(0x8EB5C4);
-            shape.drawRect(0, 450, 800, 300);
+            shape.drawRect(0, 450 + Winter.Game.top, Winter.Game.fullWidth, 226 + Winter.Game.top);
         };
         Play.prototype.newOrder = function () {
-            this.orders.push(new Winter.Order(this.game, 626, 262));
+            this.orders.push(new Winter.Order(this.game, Winter.Game.fullWidth - 174, 262 + Winter.Game.top));
         };
         Play.prototype.checkOrder = function (hatKey, noseKey, clotheKey, woodKey) {
             var _this = this;
@@ -505,8 +504,17 @@ var Winter;
     var Game = (function (_super) {
         __extends(Game, _super);
         function Game() {
-            // constructor(width?: number, height?: number, renderer?: number, parent?: any, state?: any, transparent?: boolean, antialias?: boolean, physicsConfig?: any);
-            _super.call(this, 800, 600, Phaser.AUTO, 'game', null, false, true);
+            Game.fullWidth = document.body.clientWidth;
+            Game.fullHeight = document.body.clientHeight;
+            if (Game.fullWidth < 800) {
+                Game.fullWidth = 800;
+            }
+            if (Game.fullHeight < 600) {
+                Game.fullHeight = 600;
+            }
+            Game.top = Math.ceil((Game.fullHeight - 600) / 2);
+            Game.left = Math.ceil((Game.fullWidth - 800) / 2);
+            _super.call(this, Game.fullWidth, Game.fullHeight, Phaser.AUTO, 'game', null, true, true);
             this.state.add('play', Winter.Play);
             this.state.start('play');
         }

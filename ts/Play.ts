@@ -83,21 +83,19 @@ module Winter {
 		}
 
 		create() {
-			this.game.stage.backgroundColor = 0x011C40
-
 			this.createBackground()
 
-			this.snowman = new Snowman(this.game, 400, 232, this)
-			new HatStand(this.game, 98, 260, this.snowman)
-			new ClothesStand(this.game, 232, 260, this.snowman)
+			this.snowman = new Snowman(this.game, 400 + Game.left, 232 + Game.top, this)
+			new HatStand(this.game, 98 + Game.left, 260 + Game.top, this.snowman)
+			new ClothesStand(this.game, 232 + Game.left, 260 + Game.top, this.snowman)
 
 			this.createForground()
 
-			new BucketCarrot(this.game, 282, 515, this.snowman)
-			new BucketRed(this.game, 202, 535, this.snowman)
+			new BucketCarrot(this.game, 282 + Game.left, 515 + Game.top, this.snowman)
+			new BucketRed(this.game, 202 + Game.left, 535 + Game.top, this.snowman)
 
-			new Woods(this.game, 500, 490, this.snowman)
-			new Cloud(this.game, 400, 162, this.snowman)
+			new Woods(this.game, 500 + Game.left, 490 + Game.top, this.snowman)
+			new Cloud(this.game, 400 + Game.left, 162 + Game.top, this.snowman)
 
 			this.newOrder()
 		}
@@ -105,21 +103,21 @@ module Winter {
 		createForground() {
 			var shape = this.game.add.graphics(0, 0)
 			shape.beginFill(0xBCDBE7)
-			shape.drawRect(0, 474, 800, 300)
+			shape.drawRect(0, 474 + Game.top, Game.fullWidth, 226 + Game.top)
 		}
 
 		createBackground() {
 			var shape = this.game.add.graphics(0, 0)
 			shape.beginFill(0x496586)
-			shape.drawRect(0, 426, 800, 300)
+			shape.drawRect(0, 426 + Game.top, Game.fullWidth, 226 + Game.top)
 			shape.beginFill(0x6984A2)
-			shape.drawRect(0, 436, 800, 300)
+			shape.drawRect(0, 436 + Game.top, Game.fullWidth, 226 + Game.top)
 			shape.beginFill(0x8EB5C4)
-			shape.drawRect(0, 450, 800, 300)
+			shape.drawRect(0, 450 + Game.top, Game.fullWidth, 226 + Game.top)
 		}
 
 		newOrder() {
-			this.orders.push(new Order(this.game, 626, 262))
+			this.orders.push(new Order(this.game, Game.fullWidth - 174, 262 + Game.top))
 		}
 
 		checkOrder(hatKey: string, noseKey: string, clotheKey: string, woodKey: string) {
