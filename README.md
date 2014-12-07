@@ -1,7 +1,11 @@
 Snowman Factory
 ===============
 
-[Play here !](http://rozaxe.github.io/winter)
+My entry for the **Ludum Dare 31**, you can [play here](http://rozaxe.github.io/winter) !
+
+For improving the experience, I suggest to listen [christmas song](https://www.youtube.com/watch?v=9pvL-SFVcKY) while playing.
+
+Enjoy ! :snowflake: ️:snowman: :christmas_tree:
 
 **Build**
 
