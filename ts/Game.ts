@@ -1,4 +1,6 @@
 /// <reference path='d/phaser' />
+/// <reference path='Boot' />
+/// <reference path='Loader' />
 /// <reference path='Play' />
 
 module Winter {
@@ -20,8 +22,10 @@ module Winter {
 
 			super(Game.fullWidth, Game.fullHeight, Phaser.AUTO, 'game', null, true, true)
 
+			this.state.add('boot', Boot)
+			this.state.add('loader', Loader)
 			this.state.add('play', Play)
-			this.state.start('play')
+			this.state.start('boot')
 		}
 
 	}

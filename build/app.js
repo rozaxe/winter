@@ -7,52 +7,104 @@ var __extends = this.__extends || function (d, b) {
 };
 var Winter;
 (function (Winter) {
-    var Cloud = (function (_super) {
-        __extends(Cloud, _super);
-        function Cloud(game, x, y, snowman) {
-            _super.call(this, game);
-            this.x = x + 16;
-            this.y = 0;
-            this.snowman = snowman;
-            var cloud = this.game.add.sprite(0, 0, 'cloud');
-            cloud.anchor.setTo(0.5, 1);
-            cloud.inputEnabled = true;
-            cloud.input.useHandCursor = true;
-            cloud.events.onInputDown.add(this.reset, this);
-            this.add(cloud);
-            this.snow = this.game.add.sprite(0, 0, 'snow');
-            this.snow.anchor.x = 0.5;
-            this.snow.scale.y = 0;
-            this.snow.visible = false;
-            this.add(this.snow);
-            this.game.add.existing(this);
-            // Float
-            this.game.add.tween(this).to({ x: x - 16 }, 10000).to({ x: x + 16 }, 10000).loop().start();
-            // Appear
-            this.game.add.tween(this).to({ y: y }, 1000, Phaser.Easing.Bounce.Out).delay(1100).start();
+    var Loader = (function (_super) {
+        __extends(Loader, _super);
+        function Loader() {
+            _super.apply(this, arguments);
         }
-        Cloud.prototype.reset = function () {
-            var _this = this;
-            this.snow.visible = true;
-            var tween = this.game.add.tween(this.snow.scale);
-            tween.to({ y: (500 + Winter.Game.top) / 100 }, 200);
-            tween.onComplete.add(function () {
-                _this.snowman.clean();
-                var tween = _this.game.add.tween(_this.snow);
-                tween.to({ y: Winter.Game.fullHeight }, 200);
-                tween.delay(300);
-                tween.onComplete.add(function () {
-                    _this.snow.visible = false;
-                    _this.snow.scale.y = 0;
-                    _this.snow.y = 0;
-                }, _this);
-                tween.start();
-            }, this);
-            tween.start();
+        Loader.prototype.loadAssets = function () {
+            var ress = [
+                'blue_scarf',
+                'red_scarf',
+                'green_scarf',
+                'purple_scarf',
+                'blue_scarf_hanging',
+                'red_scarf_hanging',
+                'green_scarf_hanging',
+                'purple_scarf_hanging',
+                'blue_scarf_weared',
+                'red_scarf_weared',
+                'green_scarf_weared',
+                'purple_scarf_weared',
+                'carrot',
+                'pouet_pouet',
+                'bucket_carrot',
+                'bucket_red',
+                'carrot_weared',
+                'pouet_pouet_weared',
+                'christmas_hat',
+                'high_hat',
+                'melon_hat',
+                'flat_hat',
+                'christmas_hat_hanging',
+                'high_hat_hanging',
+                'melon_hat_hanging',
+                'flat_hat_hanging',
+                'christmas_hat_weared',
+                'high_hat_weared',
+                'melon_hat_weared',
+                'flat_hat_weared',
+                'wood_1',
+                'wood_2',
+                'wood_3',
+                'wood_1_sorted',
+                'wood_2_sorted',
+                'wood_3_sorted',
+                'wood_1_weared',
+                'wood_2_weared',
+                'wood_3_weared',
+                'clothes_stand',
+                'hat_stand',
+                'bubble',
+                'cloud',
+                'eyes',
+                'snow',
+                'snowman'
+            ];
+            for (var i in ress) {
+                this.load.image(ress[i], 'assets/' + ress[i] + '.png');
+            }
+            this.load.start();
         };
-        return Cloud;
-    })(Phaser.Group);
-    Winter.Cloud = Cloud;
+        Loader.prototype.create = function () {
+            this.mask = this.game.add.graphics(32, 32);
+            this.mask.beginFill(0);
+            this.mask.drawRect(0, 0, 100, 100);
+            this.mask.scale.y = 0;
+            var moon = this.game.add.sprite(32, 32, 'moon');
+            moon.mask = this.mask;
+            this.game.load.onFileComplete.add(this.fileComplete, this);
+            this.game.load.onLoadComplete.add(this.loadComplete, this);
+            this.loadAssets();
+        };
+        Loader.prototype.fileComplete = function (progress, cacheKey, success, totalLoaded, totalFiles) {
+            this.mask.scale.y = progress / 100;
+        };
+        Loader.prototype.loadComplete = function () {
+            this.game.state.start('play');
+        };
+        return Loader;
+    })(Phaser.State);
+    Winter.Loader = Loader;
+})(Winter || (Winter = {}));
+/// <reference path='d/phaser' />
+var Winter;
+(function (Winter) {
+    var Boot = (function (_super) {
+        __extends(Boot, _super);
+        function Boot() {
+            _super.apply(this, arguments);
+        }
+        Boot.prototype.preload = function () {
+            this.game.load.image('mask', 'assets/mask.png');
+            this.game.load.image('moon', 'assets/moon.png');
+        };
+        Boot.prototype.create = function () {
+            this.game.state.start('loader');
+        };
+        return Boot;
+    })(Phaser.State);
+    Winter.Boot = Boot;
 })(Winter || (Winter = {}));
 /// <reference path='d/phaser' />
 var Winter;
@@ -419,6 +471,56 @@ var Winter;
     Winter.Woods = Woods;
 })(Winter || (Winter = {}));
 /// <reference path='d/phaser' />
+var Winter;
+(function (Winter) {
+    var Cloud = (function (_super) {
+        __extends(Cloud, _super);
+        function Cloud(game, x, y, snowman) {
+            _super.call(this, game);
+            this.x = x + 16;
+            this.y = 0;
+            this.snowman = snowman;
+            var cloud = this.game.add.sprite(0, 0, 'cloud');
+            cloud.anchor.setTo(0.5, 1);
+            cloud.inputEnabled = true;
+            cloud.input.useHandCursor = true;
+            cloud.events.onInputDown.add(this.reset, this);
+            this.add(cloud);
+            this.snow = this.game.add.sprite(0, 0, 'snow');
+            this.snow.anchor.x = 0.5;
+            this.snow.scale.y = 0;
+            this.snow.visible = false;
+            this.add(this.snow);
+            this.game.add.existing(this);
+            // Float
+            this.game.add.tween(this).to({ x: x - 16 }, 10000).to({ x: x + 16 }, 10000).loop().start();
+            // Appear
+            this.game.add.tween(this).to({ y: y }, 1000, Phaser.Easing.Bounce.Out).delay(1100).start();
+        }
+        Cloud.prototype.reset = function () {
+            var _this = this;
+            this.snow.visible = true;
+            var tween = this.game.add.tween(this.snow.scale);
+            tween.to({ y: (500 + Winter.Game.top) / 100 }, 200);
+            tween.onComplete.add(function () {
+                _this.snowman.clean();
+                var tween = _this.game.add.tween(_this.snow);
+                tween.to({ y: Winter.Game.fullHeight }, 200);
+                tween.delay(300);
+                tween.onComplete.add(function () {
+                    _this.snow.visible = false;
+                    _this.snow.scale.y = 0;
+                    _this.snow.y = 0;
+                }, _this);
+                tween.start();
+            }, this);
+            tween.start();
+        };
+        return Cloud;
+    })(Phaser.Group);
+    Winter.Cloud = Cloud;
+})(Winter || (Winter = {}));
+/// <reference path='d/phaser' />
 /// <reference path='HatStand' />
 /// <reference path='ClothesStand' />
 /// <reference path='Snowman' />
@@ -435,59 +537,6 @@ var Winter;
             _super.apply(this, arguments);
             this.orders = [];
         }
-        Play.prototype.preload = function () {
-            var ress = [
-                'blue_scarf',
-                'red_scarf',
-                'green_scarf',
-                'purple_scarf',
-                'blue_scarf_hanging',
-                'red_scarf_hanging',
-                'green_scarf_hanging',
-                'purple_scarf_hanging',
-                'blue_scarf_weared',
-                'red_scarf_weared',
-                'green_scarf_weared',
-                'purple_scarf_weared',
-                'carrot',
-                'pouet_pouet',
-                'bucket_carrot',
-                'bucket_red',
-                'carrot_weared',
-                'pouet_pouet_weared',
-                'christmas_hat',
-                'high_hat',
-                'melon_hat',
-                'flat_hat',
-                'christmas_hat_hanging',
-                'high_hat_hanging',
-                'melon_hat_hanging',
-                'flat_hat_hanging',
-                'christmas_hat_weared',
-                'high_hat_weared',
-                'melon_hat_weared',
-                'flat_hat_weared',
-                'wood_1',
-                'wood_2',
-                'wood_3',
-                'wood_1_sorted',
-                'wood_2_sorted',
-                'wood_3_sorted',
-                'wood_1_weared',
-                'wood_2_weared',
-                'wood_3_weared',
-                'clothes_stand',
-                'hat_stand',
-                'bubble',
-                'cloud',
-                'eyes',
-                'snow',
-                'snowman'
-            ];
-            for (var i in ress) {
-                this.load.image(ress[i], 'assets/' + ress[i] + '.png');
-            }
-        };
         Play.prototype.create = function () {
             var _this = this;
             this.createBackground();
@@ -544,6 +593,8 @@ var Winter;
     Winter.Play = Play;
 })(Winter || (Winter = {}));
 /// <reference path='d/phaser' />
+/// <reference path='Boot' />
+/// <reference path='Loader' />
 /// <reference path='Play' />
 var Winter;
 (function (Winter) {
@@ -561,8 +612,10 @@ var Winter;
             Game.top = Math.ceil((Game.fullHeight - 600) / 2);
             Game.left = Math.ceil((Game.fullWidth - 800) / 2);
             _super.call(this, Game.fullWidth, Game.fullHeight, Phaser.AUTO, 'game', null, true, true);
+            this.state.add('boot', Winter.Boot);
+            this.state.add('loader', Winter.Loader);
             this.state.add('play', Winter.Play);
-            this.state.start('play');
+            this.state.start('boot');
         }
         return Game;
     })(Phaser.Game);
