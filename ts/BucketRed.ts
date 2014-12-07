@@ -18,9 +18,10 @@ module Winter {
 			this.drag = this.game.add.sprite(0, 0, 'pouet_pouet')
 			this.drag.anchor.setTo(0.5)
 			this.addChild(this.drag)
-			this.drag.alpha = 0
+			this.drag.alpha = 1
 
 			this.drag.inputEnabled = true
+			this.drag.input.useHandCursor = true
 			this.drag.input.enableDrag()
 			this.drag.events.onDragStart.add(this.dragStart, this)
 			this.drag.events.onDragStop.add(this.dragStop, this)
