@@ -38,7 +38,7 @@ module Winter {
 			new Cloud(this.game, 400 + Game.left, 162 + Game.top, this.snowman)
 
 			this.createSnow()
-			
+
 			this.game.time.events.add(Phaser.Timer.SECOND * 3, () => {
 				this.newOrder(true)
 			}, this)
