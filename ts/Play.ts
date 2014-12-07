@@ -55,6 +55,10 @@ module Winter {
 			shape.drawRect(0, 474 + Game.top, Game.fullWidth, 226 + Game.top)
 			shape.y = Game.fullHeight
 			this.game.add.tween(shape).to({y: 0}, 1000, Phaser.Easing.Bounce.Out).delay(100).start()
+
+			var forest = this.game.add.sprite(Game.left - 100, Game.fullHeight, 'forest')
+			forest.anchor.x = 1
+			this.game.add.tween(forest).to({y: Game.top + 80}, 1000, Phaser.Easing.Bounce.Out).delay(900).start()
 		}
 
 		createBackground() {

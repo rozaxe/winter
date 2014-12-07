@@ -60,6 +60,7 @@ module Winter {
 
 				'clothes_stand',
 				'hat_stand',
+				'forest',
 				'bubble',
 				'valid',
 				'cloud',
