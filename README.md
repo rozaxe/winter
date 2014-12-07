@@ -1,6 +1,5 @@
 Snowman Factory
 ===============
-*v. 1.0.0*
 
 [Play here !](http://rozaxe.github.io/winter)
 
@@ -10,3 +9,6 @@ Snowman Factory
 tsc ts/*.ts --sourcemap --out build/app.js
 uglifyjs build/app.js > build/app.min.js
 ```
+
+*v. 1.0.1* -- Change cursor on clickable element
+*v. 1.0.0* -- Playable prototype
