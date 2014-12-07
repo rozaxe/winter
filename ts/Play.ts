@@ -16,6 +16,8 @@ module Winter {
 		snowman: Snowman
 
 		create() {
+			this.game.add.sprite(32, 32, 'moon')
+			
 			this.createBackground()
 
 			this.snowman = new Snowman(this.game, 400 + Game.left, 232 + Game.top, this)
